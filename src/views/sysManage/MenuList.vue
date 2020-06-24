@@ -52,8 +52,8 @@
         :columns="columns"
         :data="loadData"
         :alert="true"
-        :rowSelection="rowSelection"
-        showPagination="auto">
+        showPagination="auto"
+        :rowSelection="rowSelection" >
         <span slot="serial" slot-scope="text, record, index">
           {{ index + 1 }}
         </span>
@@ -84,14 +84,14 @@
 </template>
 
 <script>
-import moment from 'moment'
-import { Ellipsis, STable } from '@/components'
-import { getRoleList, getServiceList } from '@/api/manage'
+  import moment from 'moment'
+  import { Ellipsis, STable } from '@/components'
+  import { getRoleList, getServiceList } from '@/api/menu'
 
-const columns = [
+  const columns = [
   {
     title: '名称',
-    scopedSlots: { customRender: 'serial' }
+    dataIndex: 'menuName'
   },
   {
     title: '图标',
@@ -99,25 +99,21 @@ const columns = [
   },
   {
     title: '排序',
-    dataIndex: 'description',
-    scopedSlots: { customRender: 'description' }
+    dataIndex: 'description'
   },
   {
     title: '权限',
     dataIndex: 'callNo',
     sorter: true,
-    needTotal: true,
-    customRender: (text) => text + ' 次'
+    needTotal: true
   },
   {
-    title: '组件',
-    dataIndex: 'status',
-    scopedSlots: { customRender: 'status' }
+    title: '组件'
+    // dataIndex: 'status',
   },
   {
-    title: '状态',
-    dataIndex: 'status',
-    scopedSlots: { customRender: 'status' }
+    title: '状态'
+    // dataIndex: 'status',
   },
   {
     title: '创建时间',
@@ -167,14 +163,17 @@ export default {
       // 高级搜索 展开/关闭
       advanced: false,
       // 查询参数
-      queryParam: {},
+      queryParam: {
+        size: 10,
+        current: 1
+      },
       // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         const requestParameters = Object.assign({}, parameter, this.queryParam)
         console.log('loadData request parameters:', requestParameters)
         return getServiceList(requestParameters)
           .then(res => {
-            return res.result
+            return res.data
           })
       },
       selectedRowKeys: [],
